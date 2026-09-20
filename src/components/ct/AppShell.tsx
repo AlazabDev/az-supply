@@ -1,10 +1,33 @@
 import { ThemeToggle } from "@/components/ct/ThemeToggle";
 import { useControl } from "@/components/ct/ControlProvider";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import type { ReactNode } from "react";
+
+const NAV = [
+  { to: "/", label: "Network", exact: true },
+  { to: "/clients", label: "Clients" },
+  { to: "/invoices", label: "Invoices" },
+  { to: "/suppliers", label: "Suppliers" },
+  { to: "/inventory", label: "Inventory" },
+];
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { state } = useControl();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const criticalShipments = state.shipments.filter((s) => s.level === "critical").length;
+
+  const { data: sessionEmail } = useQuery({
+    queryKey: ["session"],
+    queryFn: async () => {
+      const { data } = await supabase.auth.getUser();
+      return data.user?.email ?? null;
+    },
+    enabled: typeof window !== "undefined",
+    staleTime: 60_000,
+  });
 
   const posture =
     state.kpis.exceptions > 22
@@ -12,6 +35,13 @@ export function AppShell({ children }: { children: ReactNode }) {
       : state.kpis.exceptions > 14
         ? { label: "Watch", color: "var(--caution)" }
         : { label: "Stable", color: "var(--nominal)" };
+
+  async function signOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  }
 
   return (
     <div className="relative z-10 min-h-screen">
@@ -39,10 +69,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
             <div>
               <h1 className="text-[15px] font-semibold leading-none tracking-tight">
-                Shipping &amp; logistics simulator
+                Shipping & logistics simulator
               </h1>
               <p className="eyebrow mt-1">
-                Meridian Freight &amp; Fulfillment · western region · 4 DC
+                Meridian Freight & Fulfillment · western region · 4 DC
               </p>
             </div>
           </div>
@@ -75,6 +105,44 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
 
+        <nav className="flex flex-wrap items-center gap-1 border-t border-border px-4 py-1.5 lg:px-6">
+          {NAV.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              activeOptions={{ exact: item.exact }}
+              className="rounded-[var(--radius-xs)] px-2.5 py-1 text-xs font-medium transition-colors"
+              activeProps={{ style: { color: "var(--primary)", backgroundColor: "var(--primary-soft)" } }}
+              inactiveProps={{ style: { color: "var(--muted-foreground)" } }}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <span className="mx-1 h-4 w-px bg-border" />
+          {sessionEmail ? (
+            <>
+              <span className="max-w-[220px] truncate text-xs text-muted-foreground">
+                {sessionEmail}
+              </span>
+              <button
+                type="button"
+                onClick={signOut}
+                className="rounded-[var(--radius-xs)] px-2.5 py-1 text-xs font-medium transition-colors"
+                style={{ color: "var(--muted-foreground)" }}
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/auth"
+              className="rounded-[var(--radius-xs)] px-2.5 py-1 text-xs font-semibold transition-colors"
+              style={{ color: "var(--primary)" }}
+            >
+              Sign in
+            </Link>
+          )}
+        </nav>
       </header>
 
       <main className="space-y-2 p-2 lg:p-3">
@@ -92,7 +160,6 @@ export function AppShell({ children }: { children: ReactNode }) {
           <p className="text-xs text-muted-foreground">
             Fictional demo dataset · <span className="num">41</span> in transit ·{" "}
             <span className="num">72</span> forward book ·{" "}
-
             <span className="num">12</span> suppliers · <span className="num">200</span> SKUs
           </p>
           <p className="text-xs text-muted-foreground">
