@@ -60,7 +60,7 @@ function AuthPage() {
         const { data, error: err } = await supabase.auth.signUp({
           email,
           password,
-          emailRedirectTo: window.location.origin,
+          options: { emailRedirectTo: window.location.origin },
         });
         if (err) throw err;
         if (!data.session) {
