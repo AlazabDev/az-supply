@@ -1,33 +1,23 @@
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-
-interface Props {
-  title: string;
-  cta: string;
-  queryKeyPrefix: string;
-  action: (input: {
-    businessName?: string;
-    email?: string;
-    phone?: string;
-    city?: string;
-    notes?: string;
-  }) => Promise<{ id: string | null }>;
-}
+import { createDaftraClient, createDaftraSupplier } from "@/lib/daftra.functions";
 
 /** Shared "add a client / supplier" form — writes straight to Daftra. */
-export function AddPartyForm({ title, cta, queryKeyPrefix, action }: Props) {
-  const run = useServerFn(action);
+export function AddPartyForm({ kind, title, cta }: { kind: "clients" | "suppliers"; title: string; cta: string }) {
+  const runClient = useServerFn(createDaftraClient);
+  const runSupplier = useServerFn(createDaftraSupplier);
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const mutation = useMutation({
-    mutationFn: run,
+    mutationFn: async (input: { businessName?: string; email?: string; phone?: string; city?: string }) =>
+      kind === "clients" ? runClient({ data: input }) : runSupplier({ data: input }),
     onSuccess: async () => {
       setError(null);
       setOpen(false);
-      await queryClient.invalidateQueries({ queryKey: ["daftra", queryKeyPrefix] });
+      await queryClient.invalidateQueries({ queryKey: ["daftra", kind] });
     },
     onError: (err) => setError(err instanceof Error ? err.message : "Failed to save."),
   });

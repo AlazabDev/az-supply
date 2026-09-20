@@ -61,16 +61,7 @@ function ClientsPage() {
             {isFetching && <span className="ml-2 text-xs text-muted-foreground">syncing…</span>}
           </h2>
         </div>
-        <AddPartyForm
-          title="Add client"
-          cta="Save client"
-          queryKeyPrefix="clients"
-          action={async (input) => {
-            "use server";
-            const { createDaftraClient } = await import("@/lib/daftra.functions");
-            return createDaftraClient({ data: input });
-          }}
-        />
+        <AddPartyForm kind="clients" title="Add client" cta="Save client" />
       </div>
       <EntityTable columns={columns} rows={data?.rows ?? []} searchKeys={["name", "email", "phone", "number", "city"]} empty="No clients found." />
       <Pager page={data?.page ?? 1} pageCount={data?.pageCount ?? 1} onPage={setPage} />

@@ -61,16 +61,7 @@ function SuppliersPage() {
             {isFetching && <span className="ml-2 text-xs text-muted-foreground">syncing…</span>}
           </h2>
         </div>
-        <AddPartyForm
-          title="Add supplier"
-          cta="Save supplier"
-          queryKeyPrefix="suppliers"
-          action={async (input) => {
-            "use server";
-            const { createDaftraSupplier } = await import("@/lib/daftra.functions");
-            return createDaftraSupplier({ data: input });
-          }}
-        />
+        <AddPartyForm kind="suppliers" title="Add supplier" cta="Save supplier" />
       </div>
       <EntityTable columns={columns} rows={data?.rows ?? []} searchKeys={["name", "email", "phone", "number", "city"]} empty="No suppliers found." />
       <Pager page={data?.page ?? 1} pageCount={data?.pageCount ?? 1} onPage={setPage} />
