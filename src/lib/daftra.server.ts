@@ -82,6 +82,16 @@ export async function daftraList<T>(
   };
 }
 
+/** Fetch a single record: GET /<entity>/<id> -> data.<Entity> */
+export async function daftraGetOne<T>(entity: string, id: string): Promise<T | null> {
+  const json = await daftraFetch(`${entity}/${encodeURIComponent(id)}`);
+  const data = json.data as Record<string, unknown> | undefined;
+  if (!data || Array.isArray(data)) return null;
+  const inner = data[entityKey(entity)] as Record<string, unknown> | undefined;
+  if (!inner) return null;
+  return { ...inner, id: String(inner.id ?? id) } as T;
+}
+
 export async function daftraCreate(
   entity: string,
   payload: Record<string, unknown>,

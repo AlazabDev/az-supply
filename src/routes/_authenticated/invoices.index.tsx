@@ -22,7 +22,7 @@ const invoicesOptions = (page: number) => ({
   queryFn: () => listDaftraInvoices({ data: { page } }),
 });
 
-export const Route = createFileRoute("/_authenticated/invoices")({
+export const Route = createFileRoute("/_authenticated/invoices/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(invoicesOptions(1)),
   head: () => ({
     meta: [
