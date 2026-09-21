@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 
 const NAV = [
   { to: "/", label: "Network", exact: true },
+  { to: "/orders", label: "Orders" },
   { to: "/clients", label: "Clients" },
   { to: "/invoices", label: "Invoices" },
   { to: "/suppliers", label: "Suppliers" },
