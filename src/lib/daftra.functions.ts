@@ -87,13 +87,14 @@ export const listDaftraInvoices = createServerFn({ method: "GET" })
       id: String(inv.id),
       no: inv.no ?? "",
       client: displayName(inv.client_business_name, inv.client_first_name, inv.client_last_name),
-      status: inv.payment_status ?? "",
       draft: inv.draft === "1",
       total: Number(inv.summary_total ?? 0),
       paid: Number(inv.summary_paid ?? 0),
       unpaid: Number(inv.summary_unpaid ?? 0),
       currency: inv.currency_code ?? "",
-      date: inv.issue_date || inv.created || "",
+      date: normalizeDate(inv.issue_date || inv.date || inv.created),
+      dueDate: normalizeDate(inv.due_date ?? inv.stored_due_date),
+      orderId: inv.work_order_id ? String(inv.work_order_id) : "",
     }));
     return { rows, page: res.page, pageCount: res.pageCount, total: res.total };
   });
