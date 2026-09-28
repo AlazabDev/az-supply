@@ -65,10 +65,12 @@ export async function daftraList<T>(
   entity: string,
   page = 1,
   limit = 50,
+  opts: { key?: string; query?: Record<string, string> } = {},
 ): Promise<DaftraPage<T>> {
-  const json = await daftraFetch(`${entity}/?page=${page}&limit=${limit}`);
+  const qs = new URLSearchParams({ page: String(page), limit: String(limit), ...(opts.query ?? {}) });
+  const json = await daftraFetch(`${entity}/?${qs.toString()}`);
   const raw = Array.isArray(json.data) ? (json.data as Record<string, unknown>[]) : [];
-  const key = entityKey(entity);
+  const key = opts.key ?? entityKey(entity);
   const rows = raw.map((row) => {
     const inner = (row[key] ?? {}) as Record<string, unknown>;
     return { ...inner, id: String(inner.id ?? "") } as T;
@@ -83,11 +85,11 @@ export async function daftraList<T>(
 }
 
 /** Fetch a single record: GET /<entity>/<id> -> data.<Entity> */
-export async function daftraGetOne<T>(entity: string, id: string): Promise<T | null> {
+export async function daftraGetOne<T>(entity: string, id: string, keyOverride?: string): Promise<T | null> {
   const json = await daftraFetch(`${entity}/${encodeURIComponent(id)}`);
   const data = json.data as Record<string, unknown> | undefined;
   if (!data || Array.isArray(data)) return null;
-  const inner = data[entityKey(entity)] as Record<string, unknown> | undefined;
+  const inner = data[keyOverride ?? entityKey(entity)] as Record<string, unknown> | undefined;
   if (!inner) return null;
   return { ...inner, id: String(inner.id ?? id) } as T;
 }
