@@ -13,6 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiAssistantRouteImport } from './routes/api/assistant'
 import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
 import { Route as AuthenticatedClientsRouteImport } from './routes/_authenticated/clients'
@@ -38,6 +39,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAssistantRoute = ApiAssistantRouteImport.update({
+  id: '/api/assistant',
+  path: '/api/assistant',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedSuppliersRoute = AuthenticatedSuppliersRouteImport.update({
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/clients': typeof AuthenticatedClientsRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
+  '/api/assistant': typeof ApiAssistantRoute
   '/invoices/$id': typeof AuthenticatedInvoicesIdRoute
   '/orders/$id': typeof AuthenticatedOrdersIdRoute
   '/invoices/': typeof AuthenticatedInvoicesIndexRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/clients': typeof AuthenticatedClientsRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
+  '/api/assistant': typeof ApiAssistantRoute
   '/invoices/$id': typeof AuthenticatedInvoicesIdRoute
   '/orders/$id': typeof AuthenticatedOrdersIdRoute
   '/invoices': typeof AuthenticatedInvoicesIndexRoute
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/_authenticated/clients': typeof AuthenticatedClientsRoute
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
+  '/api/assistant': typeof ApiAssistantRoute
   '/_authenticated/invoices/$id': typeof AuthenticatedInvoicesIdRoute
   '/_authenticated/orders/$id': typeof AuthenticatedOrdersIdRoute
   '/_authenticated/invoices/': typeof AuthenticatedInvoicesIndexRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/clients'
     | '/inventory'
     | '/suppliers'
+    | '/api/assistant'
     | '/invoices/$id'
     | '/orders/$id'
     | '/invoices/'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/clients'
     | '/inventory'
     | '/suppliers'
+    | '/api/assistant'
     | '/invoices/$id'
     | '/orders/$id'
     | '/invoices'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/_authenticated/clients'
     | '/_authenticated/inventory'
     | '/_authenticated/suppliers'
+    | '/api/assistant'
     | '/_authenticated/invoices/$id'
     | '/_authenticated/orders/$id'
     | '/_authenticated/invoices/'
@@ -161,6 +173,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiAssistantRoute: typeof ApiAssistantRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -191,6 +204,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/assistant': {
+      id: '/api/assistant'
+      path: '/api/assistant'
+      fullPath: '/api/assistant'
+      preLoaderRoute: typeof ApiAssistantRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/suppliers': {
@@ -273,6 +293,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiAssistantRoute: ApiAssistantRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

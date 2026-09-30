@@ -12,6 +12,7 @@ const NAV = [
   { to: "/invoices", label: "Invoices" },
   { to: "/suppliers", label: "Suppliers" },
   { to: "/inventory", label: "Inventory" },
+  { to: "/assistant", label: "المساعد المالي" },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
