@@ -19,8 +19,10 @@ import { Route as AuthenticatedInventoryRouteImport } from './routes/_authentica
 import { Route as AuthenticatedClientsRouteImport } from './routes/_authenticated/clients'
 import { Route as AuthenticatedOrdersIndexRouteImport } from './routes/_authenticated/orders.index'
 import { Route as AuthenticatedInvoicesIndexRouteImport } from './routes/_authenticated/invoices.index'
+import { Route as AuthenticatedAssistantIndexRouteImport } from './routes/_authenticated/assistant.index'
 import { Route as AuthenticatedOrdersIdRouteImport } from './routes/_authenticated/orders.$id'
 import { Route as AuthenticatedInvoicesIdRouteImport } from './routes/_authenticated/invoices.$id'
+import { Route as AuthenticatedAssistantThreadIdRouteImport } from './routes/_authenticated/assistant.$threadId'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -73,6 +75,12 @@ const AuthenticatedInvoicesIndexRoute =
     path: '/invoices/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAssistantIndexRoute =
+  AuthenticatedAssistantIndexRouteImport.update({
+    id: '/assistant/',
+    path: '/assistant/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedOrdersIdRoute = AuthenticatedOrdersIdRouteImport.update({
   id: '/orders/$id',
   path: '/orders/$id',
@@ -83,6 +91,12 @@ const AuthenticatedInvoicesIdRoute = AuthenticatedInvoicesIdRouteImport.update({
   path: '/invoices/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAssistantThreadIdRoute =
+  AuthenticatedAssistantThreadIdRouteImport.update({
+    id: '/assistant/$threadId',
+    path: '/assistant/$threadId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -92,8 +106,10 @@ export interface FileRoutesByFullPath {
   '/inventory': typeof AuthenticatedInventoryRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/api/assistant': typeof ApiAssistantRoute
+  '/assistant/$threadId': typeof AuthenticatedAssistantThreadIdRoute
   '/invoices/$id': typeof AuthenticatedInvoicesIdRoute
   '/orders/$id': typeof AuthenticatedOrdersIdRoute
+  '/assistant/': typeof AuthenticatedAssistantIndexRoute
   '/invoices/': typeof AuthenticatedInvoicesIndexRoute
   '/orders/': typeof AuthenticatedOrdersIndexRoute
 }
@@ -105,8 +121,10 @@ export interface FileRoutesByTo {
   '/inventory': typeof AuthenticatedInventoryRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
   '/api/assistant': typeof ApiAssistantRoute
+  '/assistant/$threadId': typeof AuthenticatedAssistantThreadIdRoute
   '/invoices/$id': typeof AuthenticatedInvoicesIdRoute
   '/orders/$id': typeof AuthenticatedOrdersIdRoute
+  '/assistant': typeof AuthenticatedAssistantIndexRoute
   '/invoices': typeof AuthenticatedInvoicesIndexRoute
   '/orders': typeof AuthenticatedOrdersIndexRoute
 }
@@ -120,8 +138,10 @@ export interface FileRoutesById {
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
   '/api/assistant': typeof ApiAssistantRoute
+  '/_authenticated/assistant/$threadId': typeof AuthenticatedAssistantThreadIdRoute
   '/_authenticated/invoices/$id': typeof AuthenticatedInvoicesIdRoute
   '/_authenticated/orders/$id': typeof AuthenticatedOrdersIdRoute
+  '/_authenticated/assistant/': typeof AuthenticatedAssistantIndexRoute
   '/_authenticated/invoices/': typeof AuthenticatedInvoicesIndexRoute
   '/_authenticated/orders/': typeof AuthenticatedOrdersIndexRoute
 }
@@ -135,8 +155,10 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/suppliers'
     | '/api/assistant'
+    | '/assistant/$threadId'
     | '/invoices/$id'
     | '/orders/$id'
+    | '/assistant/'
     | '/invoices/'
     | '/orders/'
   fileRoutesByTo: FileRoutesByTo
@@ -148,8 +170,10 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/suppliers'
     | '/api/assistant'
+    | '/assistant/$threadId'
     | '/invoices/$id'
     | '/orders/$id'
+    | '/assistant'
     | '/invoices'
     | '/orders'
   id:
@@ -162,8 +186,10 @@ export interface FileRouteTypes {
     | '/_authenticated/inventory'
     | '/_authenticated/suppliers'
     | '/api/assistant'
+    | '/_authenticated/assistant/$threadId'
     | '/_authenticated/invoices/$id'
     | '/_authenticated/orders/$id'
+    | '/_authenticated/assistant/'
     | '/_authenticated/invoices/'
     | '/_authenticated/orders/'
   fileRoutesById: FileRoutesById
@@ -248,6 +274,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInvoicesIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/assistant/': {
+      id: '/_authenticated/assistant/'
+      path: '/assistant'
+      fullPath: '/assistant/'
+      preLoaderRoute: typeof AuthenticatedAssistantIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/orders/$id': {
       id: '/_authenticated/orders/$id'
       path: '/orders/$id'
@@ -262,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInvoicesIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/assistant/$threadId': {
+      id: '/_authenticated/assistant/$threadId'
+      path: '/assistant/$threadId'
+      fullPath: '/assistant/$threadId'
+      preLoaderRoute: typeof AuthenticatedAssistantThreadIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -269,8 +309,10 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedClientsRoute: typeof AuthenticatedClientsRoute
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedSuppliersRoute: typeof AuthenticatedSuppliersRoute
+  AuthenticatedAssistantThreadIdRoute: typeof AuthenticatedAssistantThreadIdRoute
   AuthenticatedInvoicesIdRoute: typeof AuthenticatedInvoicesIdRoute
   AuthenticatedOrdersIdRoute: typeof AuthenticatedOrdersIdRoute
+  AuthenticatedAssistantIndexRoute: typeof AuthenticatedAssistantIndexRoute
   AuthenticatedInvoicesIndexRoute: typeof AuthenticatedInvoicesIndexRoute
   AuthenticatedOrdersIndexRoute: typeof AuthenticatedOrdersIndexRoute
 }
@@ -279,8 +321,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedClientsRoute: AuthenticatedClientsRoute,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedSuppliersRoute: AuthenticatedSuppliersRoute,
+  AuthenticatedAssistantThreadIdRoute: AuthenticatedAssistantThreadIdRoute,
   AuthenticatedInvoicesIdRoute: AuthenticatedInvoicesIdRoute,
   AuthenticatedOrdersIdRoute: AuthenticatedOrdersIdRoute,
+  AuthenticatedAssistantIndexRoute: AuthenticatedAssistantIndexRoute,
   AuthenticatedInvoicesIndexRoute: AuthenticatedInvoicesIndexRoute,
   AuthenticatedOrdersIndexRoute: AuthenticatedOrdersIndexRoute,
 }
